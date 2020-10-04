@@ -2,7 +2,10 @@ package com.example.trainingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
     private Model mModel;
     private Button startButton;
     private Button nextButton;
+    private  Button continueButton;
     private List<TextView> reps;
     private TextView rep0;
     private TextView rep1;
@@ -28,18 +32,24 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
     private TextView rep5;
     private TextView currentRep;
     private int MaxNumberOfSets = 6;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor prefsWriter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        this.prefsWriter = this.prefs.edit();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mModel = new Model();
+        mModel = new Model(this.prefs);
         mModel.addObserver(this);
         reps = new ArrayList<TextView>(this.MaxNumberOfSets);
 
         startButton = (Button)findViewById(R.id.button);
         nextButton  = (Button)findViewById(R.id.button2);
+        continueButton = (Button)findViewById(R.id.button4);
 
         rep0 = (TextView)findViewById(R.id.rep0);
         reps.add(rep0);
@@ -64,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
         mModel.SetReps(this.AvgRep);
         startButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
+        continueButton.setOnClickListener(this);
     }
 
     @Override
@@ -77,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
                 break;
             case R.id.button2:
                 mModel.FinishRep();
+                break;
+            case R.id.button4:
+                mModel.Save(this.prefsWriter);
                 break;
             default:
                 break;
@@ -99,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
         }
         else if(m.WorkoutStarted() && m.IsFinished()){
             currentRep.setText("Finished!");
+            nextButton.setVisibility(View.INVISIBLE);
+            continueButton.setVisibility(View.VISIBLE);
         }
     }
 }

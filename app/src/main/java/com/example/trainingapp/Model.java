@@ -1,5 +1,8 @@
 package com.example.trainingapp;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.List;
@@ -10,8 +13,12 @@ public class Model extends Observable {
     private List<SetModel> set;
     private int CurrentRep = 0;
     private boolean started = false;
+    private SharedPreferences prefs;
+    private int AvgRepsPerSet = 0;
 
-    public Model(){
+    public Model(SharedPreferences prefs){
+        this.prefs = prefs;
+        this.AvgRepsPerSet = ReadAvgRepFromPrefs();
         this.NumberOfSets = SetNumberOfSets();
         set = new ArrayList<SetModel>(this.NumberOfSets);
     }
@@ -29,6 +36,7 @@ public class Model extends Observable {
         for(int i=0;i<this.NumberOfSets;i++){
             this.set.add(new SetModel(avgRep));
         }
+        this.AvgRepsPerSet = avgRep;
         setChanged();
         notifyObservers();
     }
@@ -71,5 +79,15 @@ public class Model extends Observable {
 
     public boolean WorkoutStarted(){
         return this.started;
+    }
+
+    private int ReadAvgRepFromPrefs(){
+        return this.prefs.getInt("avgrep", 0);
+    }
+
+    public void Save(SharedPreferences.Editor editor){
+        Log.e("save", "saving");
+        editor.putInt("avgrep", this.AvgRepsPerSet + 30);
+        editor.commit();
     }
 }
