@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
     private TextView rep4;
     private TextView rep5;
     private TextView currentRep;
-    private boolean started = false;
     private int MaxNumberOfSets = 6;
 
 
@@ -91,11 +90,7 @@ public class MainActivity extends AppCompatActivity implements Observer, View.On
         for(int i=0;i<mModel.GetNumberOfSets();i++){
             this.reps.get(i).setText(mModel.GetRepCount(i));
         }
-        /*
-        rep1.setText(mModel.GetRepCount(0));
-        rep2.setText(mModel.GetRepCount(1));
-        rep3.setText(mModel.GetRepCount(2));
-        rep4.setText(mModel.GetRepCount(3));*/
+
         if(m.WorkoutStarted()){
             currentRep.setVisibility(View.VISIBLE);
         }
