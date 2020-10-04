@@ -3,14 +3,17 @@ package com.example.trainingapp;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.List;
+import java.util.Random;
 
 public class Model extends Observable {
-    private int NumberOfReps = 4;
+    private int NumberOfSets;
     private List<SetModel> set;
     private int CurrentRep = 0;
+    private boolean started = false;
 
     public Model(){
-        set = new ArrayList<SetModel>(NumberOfReps);
+        this.NumberOfSets = SetNumberOfSets();
+        set = new ArrayList<SetModel>(this.NumberOfSets);
     }
 
     public String GetRepCount(int index) throws IndexOutOfBoundsException{
@@ -23,7 +26,7 @@ public class Model extends Observable {
 
     public void SetReps(int avgRep){
 
-        for(int i=0;i<this.NumberOfReps;i++){
+        for(int i=0;i<this.NumberOfSets;i++){
             this.set.add(new SetModel(avgRep));
         }
         setChanged();
@@ -50,5 +53,23 @@ public class Model extends Observable {
             return false;
         }
         return true;
+    }
+
+    private int SetNumberOfSets(){
+        return new Random().nextInt((6-4)+1) + 4;
+    }
+
+    public int GetNumberOfSets(){
+        return this.NumberOfSets;
+    }
+
+    public void StartWorkout(){
+        this.started = true;
+        setChanged();
+        notifyObservers();
+    }
+
+    public boolean WorkoutStarted(){
+        return this.started;
     }
 }
