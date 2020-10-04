@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TrainingApp</string>
+    <string name="button0">Start</string>
+    <string name="next">Next</string>
+</resources>
